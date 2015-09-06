@@ -5,6 +5,9 @@
  */
 package ie.jgitgraph;
 
+import ie.jgitgraph.controller.LogViewController;
+import ie.jgitgraph.view.LogViewPanel;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -55,13 +58,20 @@ public class JGitGraphFrame extends JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        displayPanel = new javax.swing.JPanel();
+        logViewPanel = new ie.jgitgraph.view.LogViewPanel();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         fileMenuItem = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exitMenuItem = new javax.swing.JMenuItem();
+        viewMenu = new javax.swing.JMenu();
+        logMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        displayPanel.setLayout(new java.awt.BorderLayout());
+        displayPanel.add(logViewPanel, java.awt.BorderLayout.CENTER);
 
         fileMenu.setMnemonic(KeyEvent.VK_F);
         fileMenu.setText("File");
@@ -82,17 +92,29 @@ public class JGitGraphFrame extends JFrame {
 
         menuBar.add(fileMenu);
 
+        viewMenu.setText("View");
+
+        logMenuItem.setText("Log");
+        logMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                logMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(logMenuItem);
+
+        menuBar.add(viewMenu);
+
         setJMenuBar(menuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(displayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addComponent(displayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
         );
 
         pack();
@@ -134,6 +156,19 @@ public class JGitGraphFrame extends JFrame {
             }
         }
     }//GEN-LAST:event_fileMenuItemActionPerformed
+
+    private void logMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logMenuItemActionPerformed
+        if( evt.getSource().equals( logMenuItem ) ) {
+            LogViewController lvc = new LogViewController( git );            
+            logViewPanel.displayLog( lvc );
+
+
+        }
+    }//GEN-LAST:event_logMenuItemActionPerformed
+
+    private void clearDisplayPanel() {
+        displayPanel.removeAll();
+    }
 
     private Git loadGitContainer( final File gitDirectory ) {
         Git git = null;
@@ -185,10 +220,14 @@ public class JGitGraphFrame extends JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel displayPanel;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem fileMenuItem;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JMenuItem logMenuItem;
+    private ie.jgitgraph.view.LogViewPanel logViewPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JMenu viewMenu;
     // End of variables declaration//GEN-END:variables
 }
