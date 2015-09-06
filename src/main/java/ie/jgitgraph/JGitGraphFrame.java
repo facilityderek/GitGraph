@@ -5,10 +5,18 @@
  */
 package ie.jgitgraph;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 
 /**
  *
@@ -22,6 +30,9 @@ public class JGitGraphFrame extends JFrame {
     private static final Logger LOGGER = Logger.getLogger( JGitGraphFrame.class.getName() );
 
     private static final long serialVersionUID = 1L;
+
+    /* Git container */
+    private Git git;
 
     /**
      * File chooser
@@ -52,10 +63,12 @@ public class JGitGraphFrame extends JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        fileMenu.setMnemonic(KeyEvent.VK_F);
         fileMenu.setText("File");
+        fileMenu.setToolTipText("File actions");
 
-        fileMenuItem.setMnemonic('c');
         fileMenuItem.setText("Connect to Repository");
+        fileMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_C,ActionEvent.ALT_MASK));
         fileMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fileMenuItemActionPerformed(evt);
@@ -64,7 +77,6 @@ public class JGitGraphFrame extends JFrame {
         fileMenu.add(fileMenuItem);
         fileMenu.add(jSeparator1);
 
-        exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         fileMenu.add(exitMenuItem);
 
@@ -91,30 +103,57 @@ public class JGitGraphFrame extends JFrame {
         if( evt.getSource().equals( fileMenuItem ) ) {
             jfc.setFileHidingEnabled( true );
             jfc.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
-            int returnVal = jfc.showOpenDialog( this );
+            boolean found = false;
+            boolean canceled = false;
+            while( !found && !canceled ) {
+                int returnVal = jfc.showOpenDialog( this );
 
-            if( returnVal == JFileChooser.APPROVE_OPTION ) {
-                File repoDirectory = jfc.getSelectedFile();
-                // Find hidden .git directory
+                if( returnVal == JFileChooser.APPROVE_OPTION ) {
+                    final File repoDirectory = jfc.getSelectedFile();
+                    // Find hidden .git directory
 
-                File gitDirectory = new File( repoDirectory.getPath() + File.separator + ".git" );
+                    final File gitDirectory = new File( repoDirectory.getPath() + File.separator + ".git" );
 
-                if( gitDirectory.exists() ) {
-                    //Load the repository
-                    LOGGER.log( Level.INFO, "Opening: {0}.", repoDirectory.getName() );
+                    if( gitDirectory.exists() ) {
+                        //Load the repository
+                        found = true;
+                        git = loadGitContainer( gitDirectory );
+                        LOGGER.log( Level.INFO, "Opening: {0}.", repoDirectory.getName() );
+                    } else {
+                        JOptionPane.showMessageDialog( this,
+                                "This directory does not contain a Git repository.",
+                                "Repository not Found.",
+                                JOptionPane.INFORMATION_MESSAGE );
+
+                    }
+
                 } else {
-                    JOptionPane.showMessageDialog( this,
-                            "This directory does not contain a Git repository.",
-                            "Repository not Found.",
-                            JOptionPane.INFORMATION_MESSAGE );
-
+                    canceled = true;
+                    LOGGER.log( Level.INFO, "Open command cancelled by user." );
                 }
-
-            } else {
-                LOGGER.log( Level.INFO, "Open command cancelled by user." );
             }
         }
     }//GEN-LAST:event_fileMenuItemActionPerformed
+
+    private Git loadGitContainer( final File gitDirectory ) {
+        Git git = null;
+        try {
+            final FileRepositoryBuilder builder = new FileRepositoryBuilder();
+            final File gitRepo = gitDirectory;
+            final Repository repo = builder.setGitDir( gitRepo ).setMustExist( true ).build();
+            git = new Git( repo );
+            Iterable<RevCommit> log = git.log().call();
+            for( RevCommit rev : log ) {
+                LOGGER.log( Level.INFO, rev.getFullMessage() );
+            }
+        } catch( final IOException ex ) {
+            LOGGER.log( Level.SEVERE, "IOException", ex );
+        } catch( final GitAPIException ex ) {
+            LOGGER.log( Level.SEVERE, "GitAPIException", ex );
+        }
+
+        return git;
+    }
 
     /**
      * @param args the command line arguments
