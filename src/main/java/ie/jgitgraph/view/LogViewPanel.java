@@ -6,6 +6,7 @@
 package ie.jgitgraph.view;
 
 import ie.jgitgraph.controller.LogViewController;
+import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 /**
@@ -14,21 +15,28 @@ import org.eclipse.jgit.revwalk.RevCommit;
  */
 public class LogViewPanel extends javax.swing.JPanel {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * Creates new form LogViewPanel
      */
     public LogViewPanel() {
         initComponents();
     }
-    
-    public void displayLog(final LogViewController lvc){
+
+    public void displayLog( final LogViewController lvc ) {
         nameLabel.setText( lvc.getRepoName() );
         final StringBuilder sb = new StringBuilder();
         Iterable<RevCommit> iter = lvc.getGitLog();
-        for(RevCommit rev : iter){
-            sb.append( rev.getFullMessage() ).append('\n');
+        for( RevCommit rev : iter ) {
+            sb.append( rev.getFullMessage().replaceAll( "\n", "  " ) ).append( '\n' );
         }
         textArea.setText( sb.toString() );
+    }
+    
+    public void setRepoName(final Git git){
+        LogViewController lvc = new LogViewController(git);
+        nameLabel.setText( lvc.getRepoName() );
     }
 
     /**
@@ -47,8 +55,6 @@ public class LogViewPanel extends javax.swing.JPanel {
         textArea = new javax.swing.JTextArea();
 
         repoLabel.setText("Repository");
-
-        nameLabel.setText("name");
 
         textArea.setColumns(20);
         textArea.setRows(5);

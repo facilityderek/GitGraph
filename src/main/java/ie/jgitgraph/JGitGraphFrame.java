@@ -6,8 +6,6 @@
 package ie.jgitgraph;
 
 import ie.jgitgraph.controller.LogViewController;
-import ie.jgitgraph.view.LogViewPanel;
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -69,6 +67,8 @@ public class JGitGraphFrame extends JFrame {
         logMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setMinimumSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
         displayPanel.setLayout(new java.awt.BorderLayout());
         displayPanel.add(logViewPanel, java.awt.BorderLayout.CENTER);
@@ -140,6 +140,11 @@ public class JGitGraphFrame extends JFrame {
                         //Load the repository
                         found = true;
                         git = loadGitContainer( gitDirectory );
+                        JOptionPane.showMessageDialog( this,
+                                "Connected to Git repository.",
+                                "Connected.",
+                                JOptionPane.INFORMATION_MESSAGE );
+                        logViewPanel.setRepoName( git );
                         LOGGER.log( Level.INFO, "Opening: {0}.", repoDirectory.getName() );
                     } else {
                         JOptionPane.showMessageDialog( this,
@@ -159,25 +164,27 @@ public class JGitGraphFrame extends JFrame {
 
     private void logMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logMenuItemActionPerformed
         if( evt.getSource().equals( logMenuItem ) ) {
-            LogViewController lvc = new LogViewController( git );            
-            logViewPanel.displayLog( lvc );
-
+            if( git != null ) {
+                LogViewController lvc = new LogViewController( git );
+                logViewPanel.displayLog( lvc );
+            } else {
+                JOptionPane.showMessageDialog( this,
+                        "You must first connect to a Git repository.",
+                        "No Git Repository connected.",
+                        JOptionPane.INFORMATION_MESSAGE );
+            }
 
         }
     }//GEN-LAST:event_logMenuItemActionPerformed
 
-    private void clearDisplayPanel() {
-        displayPanel.removeAll();
-    }
-
     private Git loadGitContainer( final File gitDirectory ) {
-        Git git = null;
+        Git gitModel = null;
         try {
             final FileRepositoryBuilder builder = new FileRepositoryBuilder();
             final File gitRepo = gitDirectory;
             final Repository repo = builder.setGitDir( gitRepo ).setMustExist( true ).build();
-            git = new Git( repo );
-            Iterable<RevCommit> log = git.log().call();
+            gitModel = new Git( repo );
+            Iterable<RevCommit> log = gitModel.log().call();
             for( RevCommit rev : log ) {
                 LOGGER.log( Level.INFO, rev.getFullMessage() );
             }
@@ -187,7 +194,7 @@ public class JGitGraphFrame extends JFrame {
             LOGGER.log( Level.SEVERE, "GitAPIException", ex );
         }
 
-        return git;
+        return gitModel;
     }
 
     /**

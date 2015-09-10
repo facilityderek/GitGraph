@@ -52,9 +52,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="nameLabel">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="name"/>
-      </Properties>
     </Component>
     <Container class="javax.swing.JScrollPane" name="scrollPane">
 

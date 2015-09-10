@@ -34,7 +34,7 @@ public class LogViewController {
         this.git = git;
     }
 
-    public Iterable<RevCommit> getGitLog(){
+    public Iterable<RevCommit> getGitLog() {
         Iterable<RevCommit> log = null;
         if( git != null ) {
             try {
@@ -45,8 +45,8 @@ public class LogViewController {
         }
         return log;
     }
-    
-    public String getRepoName(){
+
+    public String getRepoName() {
         String output = "Unavailable";
         try {
             output = git.getRepository().getFullBranch();
