@@ -5,6 +5,10 @@
     <artifactId>JGitGraph</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <ciManagement>
+        <system>hudson</system>
+        <url>http://localhost:8080/job/JGitGraph/</url>
+    </ciManagement>
     <build>
         <plugins>
             <plugin>
