@@ -6,6 +6,7 @@
 package ie.jgitgraph;
 
 import ie.jgitgraph.controller.LogViewController;
+import ie.jgitgraph.view.LogGraphPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -58,6 +59,7 @@ public class JGitGraphFrame extends JFrame {
 
         displayPanel = new javax.swing.JPanel();
         logViewPanel = new ie.jgitgraph.view.LogViewPanel();
+        logGraphForm = new ie.jgitgraph.view.LogGraphForm();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         fileMenuItem = new javax.swing.JMenuItem();
@@ -65,13 +67,30 @@ public class JGitGraphFrame extends JFrame {
         exitMenuItem = new javax.swing.JMenuItem();
         viewMenu = new javax.swing.JMenu();
         logMenuItem = new javax.swing.JMenuItem();
+        graphMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(800, 600));
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
-        displayPanel.setLayout(new java.awt.BorderLayout());
-        displayPanel.add(logViewPanel, java.awt.BorderLayout.CENTER);
+        javax.swing.GroupLayout displayPanelLayout = new javax.swing.GroupLayout(displayPanel);
+        displayPanel.setLayout(displayPanelLayout);
+        displayPanelLayout.setHorizontalGroup(
+            displayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(logViewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+            .addGroup(displayPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(logGraphForm, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        displayPanelLayout.setVerticalGroup(
+            displayPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, displayPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(logViewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(logGraphForm, javax.swing.GroupLayout.PREFERRED_SIZE, 562, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         fileMenu.setMnemonic(KeyEvent.VK_F);
         fileMenu.setText("File");
@@ -102,6 +121,14 @@ public class JGitGraphFrame extends JFrame {
         });
         viewMenu.add(logMenuItem);
 
+        graphMenuItem.setText("View graph");
+        graphMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                graphMenuItemActionPerformed(evt);
+            }
+        });
+        viewMenu.add(graphMenuItem);
+
         menuBar.add(viewMenu);
 
         setJMenuBar(menuBar);
@@ -114,7 +141,7 @@ public class JGitGraphFrame extends JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(displayPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+            .addComponent(displayPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -177,6 +204,23 @@ public class JGitGraphFrame extends JFrame {
         }
     }//GEN-LAST:event_logMenuItemActionPerformed
 
+    private void graphMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_graphMenuItemActionPerformed
+        if( evt.getSource().equals( graphMenuItem ) ) {
+            if( git != null ) {
+                //LogViewController lvc = new LogViewController( git );
+
+                logGraphForm.displayGraphContent();
+                
+            } else {
+                JOptionPane.showMessageDialog( this,
+                        "You must first connect to a Git repository.",
+                        "No Git Repository connected.",
+                        JOptionPane.INFORMATION_MESSAGE );
+            }
+
+        }
+    }//GEN-LAST:event_graphMenuItemActionPerformed
+
     private Git loadGitContainer( final File gitDirectory ) {
         Git gitModel = null;
         try {
@@ -231,7 +275,9 @@ public class JGitGraphFrame extends JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem fileMenuItem;
+    private javax.swing.JMenuItem graphMenuItem;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private ie.jgitgraph.view.LogGraphForm logGraphForm;
     private javax.swing.JMenuItem logMenuItem;
     private ie.jgitgraph.view.LogViewPanel logViewPanel;
     private javax.swing.JMenuBar menuBar;
