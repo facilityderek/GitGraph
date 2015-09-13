@@ -6,7 +6,6 @@
 package ie.jgitgraph;
 
 import ie.jgitgraph.controller.LogViewController;
-import ie.jgitgraph.view.LogGraphPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
