@@ -29,15 +29,18 @@ import org.apache.commons.collections15.functors.ConstantTransformer;
  * @author dfitzsimons
  */
 public class LogGraphForm extends javax.swing.JPanel {
+
     private static final long serialVersionUID = 1L;
 
     /**
      * Logger
      */
     private static final Logger LOGGER = Logger.getLogger( LogGraphForm.class.getName() );
-    
+
     final ScalingControl scaler = new CrossoverScalingControl();
-final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
+
+    final DefaultModalGraphMouse graphMouse;
+
     /**
      * the graph
      */
@@ -87,8 +90,8 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
      * Creates new form LogGraphForm
      */
     public LogGraphForm() {
-        
-                // create a simple graph for the demo
+
+        // create a simple graph for the demo
         graph = new DelegateForest<>();
 
         createTree();
@@ -106,14 +109,15 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
         // add a listener for ToolTips
         vv.setVertexToolTipTransformer( new ToStringLabeller() );
         vv.getRenderContext().setArrowFillPaintTransformer( new ConstantTransformer( Color.lightGray ) );
-        rings = new Rings( graph, radialLayout,vv);
-               
-        
+        rings = new Rings( graph, radialLayout, vv );
+
+        graphMouse = new DefaultModalGraphMouse();
+
         initComponents();
     }
-    
-    public void displayGraphContent(){
-        
+
+    public void displayGraphContent() {
+
     }
 
     /**
@@ -166,14 +170,12 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
         plus = new javax.swing.JButton();
         minus = new javax.swing.JButton();
         radial = new javax.swing.JToggleButton();
-        modeBox = modeBox = graphMouse.getModeComboBox();
+        modeBox = graphMouse.getModeComboBox();
+        ;
         modeBox.addItemListener( graphMouse.getModeListener() );
         graphMouse.setMode( ModalGraphMouse.Mode.TRANSFORMING );
         collapse = new javax.swing.JButton();
         expand = new javax.swing.JButton();
-
-        setLayout(new java.awt.GridLayout(2, 0));
-        add(content);
 
         controls.setBorder(javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED));
         controls.setMinimumSize(new java.awt.Dimension(400, 75));
@@ -206,8 +208,6 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
             }
         });
 
-        modeBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         collapse.setText("Collapse");
         collapse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -228,31 +228,45 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
             controlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(controlsLayout.createSequentialGroup()
                 .addGap(6, 6, 6)
-                .addComponent(radial)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(modeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(scaleGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(collapse)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(expand)
-                .addContainerGap(290, Short.MAX_VALUE))
+                .addComponent(radial, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(modeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(97, 97, 97)
+                .addComponent(scaleGrid, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                .addGap(89, 89, 89)
+                .addComponent(collapse, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(expand, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         controlsLayout.setVerticalGroup(
             controlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(controlsLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(30, Short.MAX_VALUE)
                 .addGroup(controlsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(radial)
                     .addComponent(modeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(scaleGrid, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(collapse)
                     .addComponent(expand))
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addContainerGap())
+            .addComponent(scaleGrid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        add(controls);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(controls, javax.swing.GroupLayout.DEFAULT_SIZE, 863, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(content, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(controls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void radialItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_radialItemStateChanged
@@ -281,35 +295,35 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
 
     private void collapseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_collapseActionPerformed
         Collection<String> picked = new HashSet<>( vv.getPickedVertexState().getPicked() );
-                if( picked.size() == 1 ) {
-                    Object root = picked.iterator().next();
-                    Forest inGraph = (Forest) layout.getGraph();
+        if( picked.size() == 1 ) {
+            Object iterRoot = picked.iterator().next();
+            Forest<String,Integer> inGraph = (Forest<String,Integer>) layout.getGraph();
 
-                    try {
-                        collapser.collapse( vv.getGraphLayout(), inGraph, root );
-                    } catch( InstantiationException e1 ) {
-                        // TODO Auto-generated catch block
-                        LOGGER.log(Level.SEVERE,"InstantiationException",e1);
-                    } catch( IllegalAccessException e1 ) {
-                        // TODO Auto-generated catch block
-                        LOGGER.log(Level.SEVERE,"IllegalAccessException",e1);
-                    }
+            try {
+                collapser.collapse( vv.getGraphLayout(), inGraph, iterRoot );
+            } catch( InstantiationException e1 ) {
+                // TODO Auto-generated catch block
+                LOGGER.log( Level.SEVERE, "InstantiationException", e1 );
+            } catch( IllegalAccessException e1 ) {
+                // TODO Auto-generated catch block
+                LOGGER.log( Level.SEVERE, "IllegalAccessException", e1 );
+            }
 
-                    vv.getPickedVertexState().clear();
-                    vv.repaint();
-                }
+            vv.getPickedVertexState().clear();
+            vv.repaint();
+        }
     }//GEN-LAST:event_collapseActionPerformed
 
     private void expandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandActionPerformed
-        Collection picked = vv.getPickedVertexState().getPicked();
-                for( Object v : picked ) {
-                    if( v instanceof Forest ) {
-                        Forest inGraph = (Forest) layout.getGraph();
-                        collapser.expand( inGraph, (Forest) v );
-                    }
-                    vv.getPickedVertexState().clear();
-                    vv.repaint();
-                }
+        Collection<String> picked = vv.getPickedVertexState().getPicked();
+        for( Object v : picked ) {
+            if( v instanceof Forest ) {
+                Forest<String,Integer> inGraph = (Forest<String,Integer>) layout.getGraph();
+                collapser.expand( inGraph, (Forest) v );
+            }
+            vv.getPickedVertexState().clear();
+            vv.repaint();
+        }
     }//GEN-LAST:event_expandActionPerformed
 
 
