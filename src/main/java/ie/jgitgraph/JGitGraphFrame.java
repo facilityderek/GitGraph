@@ -227,15 +227,9 @@ public class JGitGraphFrame extends JFrame {
             final File gitRepo = gitDirectory;
             final Repository repo = builder.setGitDir( gitRepo ).setMustExist( true ).build();
             gitModel = new Git( repo );
-            Iterable<RevCommit> log = gitModel.log().call();
-            for( RevCommit rev : log ) {
-                LOGGER.log( Level.INFO, rev.getFullMessage() );
-            }
         } catch( final IOException ex ) {
             LOGGER.log( Level.SEVERE, "IOException", ex );
-        } catch( final GitAPIException ex ) {
-            LOGGER.log( Level.SEVERE, "GitAPIException", ex );
-        }
+        } 
 
         return gitModel;
     }
