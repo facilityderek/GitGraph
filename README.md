@@ -1,7 +1,7 @@
 # GitGraph
 Experiment in displaying Git repository graphs.
 
-Tinkering withj displaying Git trees in a graphical manner. 
+Tinkering with displaying Git trees in a graphical manner. 
 
 Initially using JGit and Jung Graphing libraries.
 
