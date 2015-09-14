@@ -29,15 +29,18 @@ import org.apache.commons.collections15.functors.ConstantTransformer;
  * @author dfitzsimons
  */
 public class LogGraphForm extends javax.swing.JPanel {
+
     private static final long serialVersionUID = 1L;
 
     /**
      * Logger
      */
     private static final Logger LOGGER = Logger.getLogger( LogGraphForm.class.getName() );
-    
+
     final ScalingControl scaler = new CrossoverScalingControl();
-final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
+
+    final DefaultModalGraphMouse graphMouse;
+
     /**
      * the graph
      */
@@ -87,8 +90,8 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
      * Creates new form LogGraphForm
      */
     public LogGraphForm() {
-        
-                // create a simple graph for the demo
+
+        // create a simple graph for the demo
         graph = new DelegateForest<>();
 
         createTree();
@@ -106,14 +109,15 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
         // add a listener for ToolTips
         vv.setVertexToolTipTransformer( new ToStringLabeller() );
         vv.getRenderContext().setArrowFillPaintTransformer( new ConstantTransformer( Color.lightGray ) );
-        rings = new Rings( graph, radialLayout,vv);
-               
-        
+        rings = new Rings( graph, radialLayout, vv );
+
+        graphMouse = new DefaultModalGraphMouse();
+
         initComponents();
     }
-    
-    public void displayGraphContent(){
-        
+
+    public void displayGraphContent() {
+
     }
 
     /**
@@ -166,7 +170,8 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
         plus = new javax.swing.JButton();
         minus = new javax.swing.JButton();
         radial = new javax.swing.JToggleButton();
-        modeBox = modeBox = graphMouse.getModeComboBox();
+        modeBox = graphMouse.getModeComboBox();
+        ;
         modeBox.addItemListener( graphMouse.getModeListener() );
         graphMouse.setMode( ModalGraphMouse.Mode.TRANSFORMING );
         collapse = new javax.swing.JButton();
@@ -202,8 +207,6 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
                 radialItemStateChanged(evt);
             }
         });
-
-        modeBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         collapse.setText("Collapse");
         collapse.addActionListener(new java.awt.event.ActionListener() {
@@ -292,35 +295,35 @@ final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
 
     private void collapseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_collapseActionPerformed
         Collection<String> picked = new HashSet<>( vv.getPickedVertexState().getPicked() );
-                if( picked.size() == 1 ) {
-                    Object root = picked.iterator().next();
-                    Forest inGraph = (Forest) layout.getGraph();
+        if( picked.size() == 1 ) {
+            Object iterRoot = picked.iterator().next();
+            Forest<String,Integer> inGraph = (Forest<String,Integer>) layout.getGraph();
 
-                    try {
-                        collapser.collapse( vv.getGraphLayout(), inGraph, root );
-                    } catch( InstantiationException e1 ) {
-                        // TODO Auto-generated catch block
-                        LOGGER.log(Level.SEVERE,"InstantiationException",e1);
-                    } catch( IllegalAccessException e1 ) {
-                        // TODO Auto-generated catch block
-                        LOGGER.log(Level.SEVERE,"IllegalAccessException",e1);
-                    }
+            try {
+                collapser.collapse( vv.getGraphLayout(), inGraph, iterRoot );
+            } catch( InstantiationException e1 ) {
+                // TODO Auto-generated catch block
+                LOGGER.log( Level.SEVERE, "InstantiationException", e1 );
+            } catch( IllegalAccessException e1 ) {
+                // TODO Auto-generated catch block
+                LOGGER.log( Level.SEVERE, "IllegalAccessException", e1 );
+            }
 
-                    vv.getPickedVertexState().clear();
-                    vv.repaint();
-                }
+            vv.getPickedVertexState().clear();
+            vv.repaint();
+        }
     }//GEN-LAST:event_collapseActionPerformed
 
     private void expandActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_expandActionPerformed
-        Collection picked = vv.getPickedVertexState().getPicked();
-                for( Object v : picked ) {
-                    if( v instanceof Forest ) {
-                        Forest inGraph = (Forest) layout.getGraph();
-                        collapser.expand( inGraph, (Forest) v );
-                    }
-                    vv.getPickedVertexState().clear();
-                    vv.repaint();
-                }
+        Collection<String> picked = vv.getPickedVertexState().getPicked();
+        for( Object v : picked ) {
+            if( v instanceof Forest ) {
+                Forest<String,Integer> inGraph = (Forest<String,Integer>) layout.getGraph();
+                collapser.expand( inGraph, (Forest) v );
+            }
+            vv.getPickedVertexState().clear();
+            vv.repaint();
+        }
     }//GEN-LAST:event_expandActionPerformed
 
 
